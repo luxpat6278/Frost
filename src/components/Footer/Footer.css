@@ -1,0 +1,91 @@
+/* Footer.css */
+.footer {
+    display: flex;
+    justify-content: center;
+}
+
+.footer-container {
+    width: 1480px;
+    background-color: hsl(0, 0%, 0%);
+    padding: 20px 0;
+}
+
+.footer-wrap {
+    max-width: 100%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.footer-left,
+.footer-middle,
+.footer-right {
+    display: flex;
+    align-items: center;
+}
+
+.footer-left,
+.footer-middle {
+    margin-right: 20px;
+    /* Отступ между элементами */
+}
+
+.footer-right {
+    display: flex;
+    align-items: flex-start;
+    /* Выравнивание элементов внутри правой части */
+}
+
+.footer-right-left,
+.footer-right-right {
+    margin-right: 20px;
+    /* Отступ между блоками информации в правой части */
+}
+
+.instagram,
+.gmail,
+.phone-call {
+    width: 30px;
+    /* Ширина иконок (можно настроить под конкретные размеры ваших иконок) */
+    height: auto;
+    margin-right: 10px;
+    /* Отступ между иконкой и текстом */
+}
+
+.phone-call {
+    margin-bottom: 10px;
+    /* Дополнительный отступ между иконками телефонов */
+}
+
+p {
+    margin: 0;
+    font-size: 14px;
+    /* Размер шрифта текста */
+    color: #dcdcdc;
+    /* Цвет текста */
+}
+
+.call__phone {
+    color: #dcdcdc
+}
+
+.gmail__link {
+    color: #dcdcdc;
+}
+
+.inst__link {
+    color: #dcdcdc;
+}
+
+.call__phone:hover {
+    color: #dcdcdc;
+}
+
+.inst__link:hover {
+    color: #dcdcdc;
+}
+
+.gmail__link:hover {
+    color: #dcdcdc;
+}

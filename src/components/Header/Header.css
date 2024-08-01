@@ -1,0 +1,119 @@
+/* components/Header/Header.css */
+.header {
+    background: #1E1E1E;
+}
+
+.container {
+    width: 1480px;
+    margin: auto;
+}
+
+.head {
+    display: flex;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    align-items: center;
+    justify-content: space-around;
+    min-width: 1420px;
+}
+
+.city {
+    display: block;
+    align-items: center;
+    padding-left: 30px;
+}
+
+.astana {
+    padding-bottom: 10px;
+    color: #FFF;
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+
+.almata {
+    color: #FFF;
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+
+.num {
+    display: grid;
+    padding-left: 25px;
+}
+
+.number {
+    color: #FFF;
+    font-family: Open Sans;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    text-decoration: none;
+}
+
+.inp {
+    margin-top: 10px;
+    margin-left: 30px;
+    display: flex;
+    align-items: center;
+    border: 2px solid gray;
+}
+
+.inp input[type="text"] {
+    padding: 10px;
+    border: none;
+    outline: none;
+    background: #1E1E1E;
+    color: #FFF;
+    width: 354px;
+    height: 20px;
+}
+
+.inp button[type="submit"] {
+    padding: 8px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    border-left: 2px solid gray;
+}
+
+.inp button[type="submit"] img {
+    height: 20px;
+    width: 20px;
+}
+
+.sig__log {
+    display: grid;
+    padding-left: 35px;
+}
+
+.log__in,
+.sig__in {
+    font-family: Open Sans;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 22px;
+    letter-spacing: 0em;
+    text-align: right;
+    text-decoration: none;
+    color: #FFF;
+}
+
+.basket {
+    width: 35.5px;
+    height: 39px;
+    border: 2px;
+}
+
+.number:hover{
+    color: aliceblue;
+}
+
+.log__in:hover,
+.sig__in:hover{
+    color: aliceblue;
+}
