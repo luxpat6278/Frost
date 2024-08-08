@@ -43,11 +43,16 @@ const Tdl: React.FC = () => {
     const [models, setModels] = useState<Model[]>([]);
     const [generations, setGenerations] = useState<Generation[]>([]);
 
+<<<<<<< HEAD
+=======
+    // Состояния для выбранных элементов
+>>>>>>> fbc986a5be23c5c961697f45b493b123b5c8c7ee
     const [selectedCategory, setSelectedCategory] = useState<string>('Все категории');
     const [selectedBrand, setSelectedBrand] = useState<string>('Все марки');
     const [selectedModel, setSelectedModel] = useState<string>('Все модели');
     const [selectedGeneration, setSelectedGeneration] = useState<string>('Все поколения');
 
+<<<<<<< HEAD
     const [modelId, setModelId] = useState<number | null>(null);
     const [showAvailableOnly, setShowAvailableOnly] = useState<boolean>(false);
 
@@ -124,6 +129,57 @@ const Tdl: React.FC = () => {
 
         fetchFilteredData();
     }, [selectedCategory, selectedBrand, selectedModel, selectedGeneration, showAvailableOnly]);
+=======
+    useEffect(() => {
+        // Получение категорий
+        fetch('https://frost.runtime.kz/api/categories')
+            .then(response => response.json())
+            .then(data => {
+                setCategories(data);
+            })
+            .catch(error => {
+                console.error('Ошибка при получении категорий:', error);
+            });
+
+        // Получение марок
+        fetch('https://frost.runtime.kz/api/brands')
+            .then(response => response.json())
+            .then(data => {
+                setBrands(data);
+            })
+            .catch(error => {
+                console.error('Ошибка при получении марок:', error);
+            });
+
+        // Получение моделей
+        fetch('https://frost.runtime.kz/api/models')
+            .then(response => response.json())
+            .then(data => {
+                if (Array.isArray(data)) {
+                    setModels(data);
+                } else {
+                    console.error('Данные моделей не являются массивом:', data);
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка при получении моделей:', error);
+            });
+
+        // Получение поколений
+        fetch('https://frost.runtime.kz/api/generations')
+            .then(response => response.json())
+            .then(data => {
+                if (Array.isArray(data)) {
+                    setGenerations(data);
+                } else {
+                    console.error('Данные поколений не являются массивом:', data);
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка при получении поколений:', error);
+            });
+    }, []);
+>>>>>>> fbc986a5be23c5c961697f45b493b123b5c8c7ee
 
     const toggleMenu = (index: number) => {
         setMenuVisible(prevState => {
@@ -133,6 +189,10 @@ const Tdl: React.FC = () => {
         });
     };
 
+<<<<<<< HEAD
+=======
+    // Обработчики выбора с отменой выбора
+>>>>>>> fbc986a5be23c5c961697f45b493b123b5c8c7ee
     const handleSelectCategory = (category: Category) => {
         setSelectedCategory(prev => (prev === category.name ? 'Все категории' : category.name));
         toggleMenu(0);
@@ -145,7 +205,10 @@ const Tdl: React.FC = () => {
 
     const handleSelectModel = (model: Model) => {
         setSelectedModel(prev => (prev === model.name ? 'Все модели' : model.name));
+<<<<<<< HEAD
         setModelId(prev => (prev === model.id ? null : model.id));
+=======
+>>>>>>> fbc986a5be23c5c961697f45b493b123b5c8c7ee
         toggleMenu(2);
     };
 
@@ -153,10 +216,13 @@ const Tdl: React.FC = () => {
         setSelectedGeneration(prev => (prev === generation.name ? 'Все поколения' : generation.name));
         toggleMenu(3);
     };
+<<<<<<< HEAD
 
     const handleToggleAvailability = () => {
         setShowAvailableOnly(prev => !prev);
     };
+=======
+>>>>>>> fbc986a5be23c5c961697f45b493b123b5c8c7ee
 
     return (
         <div className="category">
@@ -254,3 +320,13 @@ const Tdl: React.FC = () => {
 };
 
 export default Tdl;
+<<<<<<< HEAD
+=======
+
+
+
+
+
+
+
+>>>>>>> fbc986a5be23c5c961697f45b493b123b5c8c7ee

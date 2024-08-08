@@ -61,4 +61,9 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
     );
 }
 
+<<<<<<< HEAD
 export default Header;
+=======
+export default Header;
+
+>>>>>>> fbc986a5be23c5c961697f45b493b123b5c8c7ee
