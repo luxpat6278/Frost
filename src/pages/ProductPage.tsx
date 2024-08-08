@@ -1,60 +1,136 @@
-// src/pages/ProductPage.tsx
+// ProductPage.tsx
 import React, { useEffect, useState } from 'react';
-import ProductCardinPD from '../components/ProductCardinPD/ProductCardinPD'; 
+import { useParams } from 'react-router-dom';
+import ProductCardinPD from '../components/ProductCardinPD/ProductCardinPD';
+import Header from '../components/Header/Header';
+import Footer from '../components/Footer/Footer';
 import styled from 'styled-components';
+import Reviews from '../components/Reviews/Reviews';
 
-const Container = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: #f5f5f5;
+const LoadingContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-size: 24px;
 `;
 
-interface Product {
-    id: number; 
-    name: string;
-    description: string;
-    price: number;
+const ErrorContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-size: 24px;
+  color: red;
+`;
 
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+`;
+
+const MainContent = styled.div`
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+`;
+
+const ReviewsContainer = styled.div`
+  margin-top: 20px; 
+  display: flex; 
+  justify-content: center; 
+`;
+
+interface Machine {
+  id: number;
+  name: string;
+}
+
+interface Model {
+  id: number;
+  name: string;
+  machine: Machine;
+}
+
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  images: string[];
+  models: Model[];
+  reviews: Review[]; // Добавляем поле для отзывов
+}
+
+interface Review {
+  id: number;
+  text: string;
+  rating: number;
 }
 
 const ProductPage: React.FC = () => {
-    const [product, setProduct] = useState<Product | null>(null);
-    const [error, setError] = useState<string | null>(null); // Added error state
-    const [loading, setLoading] = useState(true); // Added loading state
+  const { id } = useParams<{ id: string }>();
+  const [product, setProduct] = useState<Product | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        // Fetch data from the API
-        async function fetchProduct(productId) {
-          alert('abc')
-          try {
-            const response = await fetch(`https://frost.runtime.kz/api/products/${productId}`);
-            
-            if (!response.ok) {
-              throw new Error(`Network response was not ok: ${response.statusText}`);
-            }
-        
-            const data = await response.json();
-            // Do something with the data
-          } catch (error) {
-            console.error("Error fetching product:", error);
-          }
+  useEffect(() => {
+    async function fetchProduct(productId: number) {
+      try {
+        const response = await fetch(`https://frost.runtime.kz/api/products/${productId}`);
+
+        if (!response.ok) {
+          throw new Error(`Network response was not ok: ${response.statusText}`);
         }
-        
-        // Call the function with a valid product ID
-        fetchProduct(1);
-        
-    }, []);
 
-    return (
-        <Container>
-            {loading && <p>Loading...</p>}
-            {error && <p>Error: {error}</p>}
-            {product && <ProductCardinPD product={product} />}
-        </Container>
-    );
+        const data = await response.json();
+
+        if (data && data.id) {
+          setProduct(data);
+        } else {
+          setError('Product not found');
+        }
+      } catch (error: any) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    if (id) {
+      const productId = Number(id);
+      if (!isNaN(productId)) {
+        fetchProduct(productId);
+      } else {
+        setError('Invalid product ID');
+        setLoading(false);
+      }
+    }
+  }, [id]);
+
+  if (loading) {
+    return <LoadingContainer>Loading...</LoadingContainer>;
+  }
+
+  if (error) {
+    return <ErrorContainer>Error: {error}</ErrorContainer>;
+  }
+
+  return (
+    <Container>
+      <Header />
+      <MainContent>
+        {product && <ProductCardinPD product={product} />}
+        <ReviewsContainer>
+          {product && (
+            <Reviews productId={product.id} />
+          )}
+        </ReviewsContainer>
+      </MainContent>
+      <Footer />
+    </Container>
+  );
 };
 
 export default ProductPage;
-

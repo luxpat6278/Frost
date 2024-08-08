@@ -1,54 +1,91 @@
 import React from 'react';
 import styled from 'styled-components';
 
-interface PaginationProps {
-  totalPages: number;
-  currentPage: number;
-  onPageChange: (page: number) => void;
-}
-
 const PaginationContainer = styled.div`
   display: flex;
-  justify-content: flex-end;
-  margin-top: 20px;
-  width: 1480px;
+  align-items: center;
+  justify-content: flex-end; // Правое выравнивание
+  margin: 20px 0; 
 `;
 
-interface PaginationButtonProps {
-  active: boolean;
-}
-
-const PaginationButton = styled.button<PaginationButtonProps>`
-  margin: 0 5px;
-  padding: 5px 10px;
+const Button = styled.button`
+  padding: 10px 20px;
+  margin-left: 10px;
+  background-color: #007bff;
+  color: white;
   border: none;
-  background-color: ${props => (props.active ? '#007bff' : '#f0f0f0')};
-  color: ${props => (props.active ? 'white' : 'black')};
+  border-radius: 5px;
   cursor: pointer;
 
-  &:hover:not(.active) {
-    background-color: #ddd;
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: #0056b3;
   }
 `;
 
-const Pagination: React.FC<PaginationProps> = ({ totalPages, currentPage, onPageChange }) => {
-  const renderPageNumbers = () => {
-    const pageNumbers = [];
-    for (let i = 1; i <= totalPages; i++) {
-      pageNumbers.push(
-        <PaginationButton
-          key={i}
-          onClick={() => onPageChange(i)}
-          active={i === currentPage}
-        >
-          {i}
-        </PaginationButton>
-      );
+const PageButton = styled.button<{ isActive?: boolean }>`
+  padding: 10px;
+  margin: 0 5px;
+  background-color: ${({ isActive }) => (isActive ? '#0056b3' : '#e0e0e0')};
+  color: ${({ isActive }) => (isActive ? 'white' : 'black')};
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #007bff;
+    color: white;
+  }
+`;
+
+interface PaginationProps {
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+}
+
+const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPageChange }) => {
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      onPageChange(currentPage + 1);
     }
-    return pageNumbers;
   };
 
-  return <PaginationContainer>{renderPageNumbers()}</PaginationContainer>;
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      onPageChange(currentPage - 1);
+    }
+  };
+
+  return (
+    <PaginationContainer>
+      {currentPage > 1 && ( // Кнопка "Назад" появляется только если мы не на первой странице
+        <Button onClick={handlePreviousPage}>
+          Назад
+        </Button>
+      )}
+      
+      {Array.from({ length: totalPages }, (_, index) => (
+        <PageButton
+          key={index + 1}
+          onClick={() => onPageChange(index + 1)}
+          isActive={currentPage === index + 1}
+        >
+          {index + 1}
+        </PageButton>
+      ))}
+
+      {currentPage < totalPages && ( // Кнопка "Далее" исчезает на последней странице
+        <Button onClick={handleNextPage}>
+          Далее
+        </Button>
+      )}
+    </PaginationContainer>
+  );
 };
 
 export default Pagination;

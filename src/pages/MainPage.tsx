@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
 import Header from '../components/Header/Header';
 import Footer from '../components/Footer/Footer';
 import TDL from '../components/ToDoList/ToDoList';
@@ -8,7 +7,6 @@ import Pagination from '../components/PagesSelection/PageSelection';
 import axios from 'axios';
 import styled from 'styled-components';
 
-// Стили
 const LoadingContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -26,18 +24,26 @@ const ErrorContainer = styled.div`
   color: red;
 `;
 
-// Типы
+const NotFoundContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 24px;
+  color: white;
+`;
+
 interface Product {
   id: number;
   name: string;
   price: number;
 }
 
-// Главный компонент
 const MainPage: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const itemsPerPage = 6;
@@ -51,9 +57,9 @@ const MainPage: React.FC = () => {
             size: itemsPerPage,
           },
         });
-        console.log('Полученные продукты:', response.data.items); // Логирование полученных данных
+        console.log('Полученные продукты:', response.data.items);
         setProducts(response.data.items);
-        setTotalPages(response.data.totalPages); // Предполагаем, что API возвращает общее количество страниц под ключом "totalPages"
+        setTotalPages(response.data.totalPages);
         setLoading(false);
       } catch (err: any) {
         const errorMessage = err.response?.data?.message || 'Ошибка при получении данных';
@@ -69,6 +75,17 @@ const MainPage: React.FC = () => {
     setCurrentPage(page);
   };
 
+  const handleSearch = (query: string) => {
+    setSearchQuery(query.trim());
+    setCurrentPage(1);
+  };
+
+  const filteredProducts = products.filter(product =>
+    product.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  console.log('Отфильтрованные продукты:', filteredProducts);
+
   if (loading) {
     return <LoadingContainer>Loading...</LoadingContainer>;
   }
@@ -78,17 +95,25 @@ const MainPage: React.FC = () => {
   }
 
   return (
-    <Router>
-      <Header />
+    <>
+      <Header onSearch={handleSearch} />
       <TDL />
-      <ProductCards products={products} />
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-      />
+      {filteredProducts.length > 0 ? (
+        <>
+          <ProductCards products={filteredProducts} />
+          {totalPages > 1 && ( // Изменено условие для отображения переключателя страниц
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          )}
+        </>
+      ) : (
+        <NotFoundContainer>Компрессор не найден</NotFoundContainer>
+      )}
       <Footer />
-    </Router>
+    </>
   );
 };
 
