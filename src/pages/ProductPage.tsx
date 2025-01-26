@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ProductCardinPD from '../components/ProductCardinPD/ProductCardinPD';
-import Header from '../components/Header/Header';
 import Footer from '../components/Footer/Footer';
 import styled from 'styled-components';
 import Reviews from '../components/Reviews/Reviews';
@@ -60,7 +59,7 @@ interface Product {
   price: number;
   images: string[];
   models: Model[];
-  reviews: Review[]; // Добавляем поле для отзывов
+  reviews: Review[];
 }
 
 interface Review {
@@ -69,7 +68,11 @@ interface Review {
   rating: number;
 }
 
-const ProductPage: React.FC = () => {
+interface ProductPageProps {
+  updateCartItemCount: (count: number) => void;
+}
+
+const ProductPage: React.FC<ProductPageProps> = ({ updateCartItemCount }) => {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<Product | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -109,6 +112,11 @@ const ProductPage: React.FC = () => {
     }
   }, [id]);
 
+  const handleAddToCart = () => {
+    // Обновите количество товаров в корзине
+    updateCartItemCount(prevCount => prevCount + 1);
+  };
+
   if (loading) {
     return <LoadingContainer>Loading...</LoadingContainer>;
   }
@@ -119,20 +127,20 @@ const ProductPage: React.FC = () => {
 
   return (
     <Container>
-      <Header />
       <MainContent>
-        {product && <ProductCardinPD product={product} />}
+        {product && (
+          <>
+            <ProductCardinPD product={product} />
+          </>
+        )}
         <ReviewsContainer>
-          {product && (
-            <Reviews productId={product.id} />
-          )}
+          {product && <Reviews productId={product.id} />}
         </ReviewsContainer>
       </MainContent>
       <Footer />
     </Container>
   );
 };
-
 
 export default ProductPage;
 

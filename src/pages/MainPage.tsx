@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import Header from '../components/Header/Header';
+import React, { useEffect, useState, useCallback } from 'react';
 import Footer from '../components/Footer/Footer';
 import TDL from '../components/ToDoList/ToDoList';
 import ProductCards from '../components/Prod/Prod';
@@ -39,6 +38,14 @@ interface Product {
   price: number;
 }
 
+interface Filters {
+  category: string;
+  brand: string;
+  model: string;
+  generation: string;
+  available: boolean;
+}
+
 const MainPage: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -46,30 +53,47 @@ const MainPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+  const [filters, setFilters] = useState<Filters>({
+    category: 'Все категории',
+    brand: 'Все марки',
+    model: 'Все модели',
+    generation: 'Все поколения',
+    available: false,
+  });
+
   const itemsPerPage = 6;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('https://frost.runtime.kz/api/products', {
-          params: {
-            page: currentPage,
-            size: itemsPerPage,
-          },
-        });
-        console.log('Полученные продукты:', response.data.items);
-        setProducts(response.data.items);
-        setTotalPages(response.data.totalPages);
-        setLoading(false);
-      } catch (err: any) {
-        const errorMessage = err.response?.data?.message || 'Ошибка при получении данных';
-        setError(errorMessage);
-        setLoading(false);
-      }
-    };
+  const fetchProducts = useCallback(async () => {
+    setLoading(true);
+    setError(null);
 
-    fetchData();
-  }, [currentPage]);
+    const { category, brand, model, generation, available } = filters;
+    try {
+      const { data } = await axios.get('https://frost.runtime.kz/api/products', {
+        params: {
+          page: currentPage,
+          size: itemsPerPage,
+          category: category !== 'Все категории' ? category : undefined,
+          brandId: brand !== 'Все марки' ? brand : undefined,
+          modelId: model !== 'Все модели' ? model : undefined,
+          generationId: generation !== 'Все поколения' ? generation : undefined,
+          available: available ? 1 : undefined,
+        },
+      });
+
+      setProducts(data.items);
+      setTotalPages(data.totalPages);
+    } catch (err) {
+      const errorMessage = err.response?.data?.message || 'Ошибка при получении данных';
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  }, [currentPage, filters]);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -84,8 +108,6 @@ const MainPage: React.FC = () => {
     product.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  console.log('Отфильтрованные продукты:', filteredProducts);
-
   if (loading) {
     return <LoadingContainer>Loading...</LoadingContainer>;
   }
@@ -96,12 +118,11 @@ const MainPage: React.FC = () => {
 
   return (
     <>
-      <Header onSearch={handleSearch} />
-      <TDL />
+      <TDL filters={filters} setFilters={setFilters} />
       {filteredProducts.length > 0 ? (
         <>
-          <ProductCards products={filteredProducts} />
-          {totalPages > 1 && ( // Изменено условие для отображения переключателя страниц
+        <ProductCards products={products} loading={loading} error={error} />
+          {totalPages > 1 && (
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
@@ -118,3 +139,4 @@ const MainPage: React.FC = () => {
 };
 
 export default MainPage;
+

@@ -1,5 +1,7 @@
+// src/components/ProductCardinPD/ProductCardinPD.tsx
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { useCart } from '../../context/localizationContext/LocalizationContext';
 
 interface Brand {
   id: number;
@@ -22,13 +24,13 @@ interface Product {
   description: string;
   price: number;
   images?: string[];
-  available: number; // 1 для доступен, 0 для недоступен
-  code: string; // Артикул
-  manufacturer: string; // Производитель
-  brand?: Brand; // Опционально
-  model?: Model; // Опционально
-  generation?: Generation; // Опционально
-  additionalModels?: Model[]; // Дополнительные модели
+  available: number;
+  code: string;
+  manufacturer: string;
+  brand?: Brand; 
+  model?: Model;
+  generation?: Generation;
+  additionalModels?: Model[];
 }
 
 interface ProductCardinPDProps {
@@ -175,12 +177,12 @@ const ToggleButton = styled.button`
 
   &::before {
     content: "+";
-    color: #2156bd; // Цвет плюса
-    margin-right: 5px; // Отступ между плюсом и текстом
+    color: #2156bd; 
+    margin-right: 5px;
   }
   
   span {
-    color: white; // Цвет текста
+    color: white; 
   }
 `;
 
@@ -188,7 +190,7 @@ const ModelsList = styled.ul`
   list-style: none;
   padding: 0;
   margin-top: 5px;
-  margin-left: 25px; // Отступ для визуального выравнивания
+  margin-left: 25px; 
 `;
 
 const ModelsItem = styled.li`
@@ -205,6 +207,7 @@ const placeholderImages = [
 const ProductCardinPD: React.FC<ProductCardinPDProps> = ({ product }) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isModelsOpen, setIsModelsOpen] = useState(false);
+  const { addItem } = useCart(); 
 
   useEffect(() => {
     setSelectedImage(product.images?.[0] || placeholderImages[0]);
@@ -215,6 +218,15 @@ const ProductCardinPD: React.FC<ProductCardinPDProps> = ({ product }) => {
 
   const handleToggleModels = () => {
     setIsModelsOpen(!isModelsOpen);
+  };
+
+  const handleAddToCart = () => {
+    addItem({
+      id: product.id.toString(),
+      name: product.name,
+      price: product.price,
+      quantity: 1
+    });
   };
 
   return (
@@ -247,7 +259,6 @@ const ProductCardinPD: React.FC<ProductCardinPDProps> = ({ product }) => {
                       <ModelsItem>
                         Модель: {product.model.name} (Поколение: {product.generation ? product.generation.name : 'Не указано'})
                       </ModelsItem>
-                      {/* Добавьте дополнительные модели, если они есть */}
                       {product.additionalModels && product.additionalModels.map((model, index) => (
                         <ModelsItem key={index}>
                           Модель: {model.name}
@@ -293,10 +304,11 @@ const ProductCardinPD: React.FC<ProductCardinPDProps> = ({ product }) => {
           <div>г. Астана</div>
           <div>г. Алма-Ата</div>
         </Cities>
-        <BuyButton>Купить</BuyButton>
+        <BuyButton onClick={handleAddToCart}>Купить</BuyButton>
       </ProductInfo>
     </Container>
   );
 };
 
 export default ProductCardinPD;
+

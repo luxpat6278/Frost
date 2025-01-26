@@ -3,6 +3,8 @@ import styled from 'styled-components';
 
 const ReviewsContainer = styled.section`
   margin-top: 20px;
+  width: 700px;
+  margin-bottom: 30px;
 `;
 
 const ReviewItem = styled.div`

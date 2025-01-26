@@ -1,39 +1,40 @@
-import React from 'react';
-import './Footer.css'; // Это можно оставить, если вы хотите явно импортировать CSS
-
-import insta from './Fimg/Insta.svg';
-import mail from './Fimg/Mail.svg';
-import phone from './Fimg/Phone.svg';
+import "./Footer.css";
+import instagramLogo from "../../images/instagram.png";
+import gmailLogo from "../../images/gmail.png";
+import phoneCallLogo from "../../images/phone-call.png";
+import { useTranslation } from "../../hooks/useTranslation";
 
 const Footer: React.FC = () => {
+  // Translation hook
+  const { t } = useTranslation();
+
   return (
-<div className='footer'>
-    <div className="footer-container">
-      <div className="footer-wrap">
-        <div className="footer-left">
-          <img className="instagram" src={insta} alt="instagram" />
-          <a href = "#" className='inst__link'>Instagram</a>
+    <div className="footerWrapper dark:border-[#222222] dark:bg-[#222222]">
+      <div className="footerContent">
+        <div className="footerSocial dark:bg-[#222222]">
+          <img className="socialLogo" src={instagramLogo} alt="Instagram" />
+          <a
+            href="http://instagram.com"
+            className="socialLink dark:text-white max-lg:hidden"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <p className="footerText">bakytdreamer</p>
+          </a>
         </div>
-        <div className="footer-middle">
-          <img className="gmail" src={mail} alt="gmail" />
-          <a href = "#" className='gmail__link'>company@gmail.com</a>
+
+        <div className="footerEmail dark:bg-[#222222]">
+          <img className="emailLogo" src={gmailLogo} alt="Gmail" />
+          <p className="footerText max-lg:hidden">ba.temirgali@gmail.com</p>
         </div>
-        <div className="footer-right">
-          <img className="phone-call" src={phone} alt="phone-call" />
-          <div className="footer-right-left">
-            <p>Astana:</p>
-            <a href = "#" className='call__phone'>+7 775 000 77 49</a>
-          </div>
-          <img className="phone-call" src={phone} alt="phone-call" />
-          <div className="footer-right-right">
-            <p>Almaty:</p>
-            <a href = "#"  className='call__phone'> +7 775 000 77 49</a>
-          </div>
+
+        <div className="footerContact dark:bg-[#222222]">
+          <img className="contactLogo" src={phoneCallLogo} alt="Phone Call" />
+          <p className="footerText max-lg:hidden">{t("footerContacts")}</p>
         </div>
       </div>
-    </div>
     </div>
   );
 };
 
-export default Footer;
+export default Footer;
