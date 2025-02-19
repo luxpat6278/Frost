@@ -1,40 +1,38 @@
 import "./Footer.css";
-import instagramLogo from "../../images/instagram.png";
-import gmailLogo from "../../images/gmail.png";
-import phoneCallLogo from "../../images/phone-call.png";
+import instagramLogo from "../../images/instagram";
+import gmailLogo from "../../images/gmail";
+import phoneCallLogo from "../../images/phone-call";
 import { useTranslation } from "../../hooks/useTranslation";
 
-const Footer: React.FC = () => {
-  // Translation hook
+// Типы для использования в компоненте
+interface FooterProps {}
+
+function Footer({}: FooterProps) {
+  // useTranslation.jsx
   const { t } = useTranslation();
 
   return (
-    <div className="footerWrapper dark:border-[#222222] dark:bg-[#222222]">
-      <div className="footerContent">
-        <div className="footerSocial dark:bg-[#222222]">
-          <img className="socialLogo" src={instagramLogo} alt="Instagram" />
-          <a
-            href="http://instagram.com"
-            className="socialLink dark:text-white max-lg:hidden"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <p className="footerText">bakytdreamer</p>
+    <div className="footer-container dark:border-[#222222] dark:bg-[#222222]">
+      <div className="footer-wrap">
+        <div className="footer-instagram dark:bg-[#222222]">
+          <img className="instagram" src={instagramLogo} alt="instagram" />
+          <a href="http://instagram.com" className="instagram-text dark:text-white max-lg:hidden" target="_blank" rel="noopener noreferrer">
+            <p className="footer-text">bakytdreamer</p>
           </a>
         </div>
 
-        <div className="footerEmail dark:bg-[#222222]">
-          <img className="emailLogo" src={gmailLogo} alt="Gmail" />
-          <p className="footerText max-lg:hidden">ba.temirgali@gmail.com</p>
+        <div className="footer-gmail dark:bg-[#222222]">
+          <img className="gmail" src={gmailLogo} alt="gmail" />
+          <p className="footer-text max-lg:hidden">ba.temirgali@gmail.com</p>
         </div>
 
-        <div className="footerContact dark:bg-[#222222]">
-          <img className="contactLogo" src={phoneCallLogo} alt="Phone Call" />
-          <p className="footerText max-lg:hidden">{t("footerContacts")}</p>
+        <div className="footer-whatsapp dark:bg-[#222222]">
+          <img className="phone-call" src={phoneCallLogo} alt="phone-call" />
+          <p className="footer-text max-lg:hidden">{t("footerContacts")}</p>
         </div>
       </div>
     </div>
   );
-};
+}
 
-export default Footer;
+export default Footer;

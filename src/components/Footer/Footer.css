@@ -1,76 +1,80 @@
-.footerWrapper {
-    margin-top: auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    background: #ffffff;
-    border-top: 1px solid #cccccc;
-  }
-  
-  .footerContent {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 960px;
-    height: 40px;
-  }
-  
-  .footerSocial {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    height: 40px;
-    background-color: #ffffff;
-  }
-  
-  .socialLogo {
-    margin: 10px;
-    width: 20px;
-    height: auto;
-  }
-  
-  .socialLink {
-    text-decoration: none;
-    color: black;
-  }
-  
-  .footerEmail {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 40px;
-    background-color: #ffffff;
-  }
-  
-  .emailLogo {
-    margin: 10px;
-    width: 20px;
-    height: auto;
-  }
-  
-  .footerContact {
-    margin-right: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 40px;
-    background-color: #ffffff;
-  }
-  
-  .contactLogo {
-    margin: 10px;
-    width: 20px;
-    height: auto;
-  }
-  
-  .footerText {
-    font-size: 14px;
-    color: #000;
-  }
-  
-  @media (max-width: 768px) {
-    .footerText {
-      font-size: 12px;
-    }
-  }
+.footer-container {
+  margin-top: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  background: #ffffff;
+  border-top: 1px solid #cccccc;
+}
+
+.footer-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 960px;
+  height: 40px;
+}
+
+.footer-instagram {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  height: 40px;
+  background-color: #ffffff;
+}
+
+.instagram {
+  margin: 10px;
+  width: 20px;
+  height: auto;
+}
+
+.instagram-text {
+  text-decoration: none;
+  color: black;
+}
+
+.footer-gmail {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  height: 40px;
+  background-color: #ffffff;
+}
+
+.gmail {
+  margin: 10px;
+  width: 20px;
+  height: auto;
+}
+
+.footer-whatsapp {
+  margin-right: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 40px;
+  background-color: #ffffff;
+}
+
+.footer-right-left {
+  width: 200px;
+}
+
+.footer-right-right {
+  width: 200px;
+}
+
+.phone-call {
+  margin: 10px;
+  width: 20px;
+  height: auto;
+}
+
+/*@media (max-width: 768px) {*/
+/*  .footer-text {*/
+/*    font-size: 10px;*/
+/*  }*/
+/*}*/

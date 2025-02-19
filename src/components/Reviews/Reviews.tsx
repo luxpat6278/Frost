@@ -1,90 +1,143 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import "./Reviews.css";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import ButtonStandard from "../../ui/buttonStandard/ButtonStandard";
+import { useSelector } from "react-redux";
+import { useTranslation } from "../../hooks/useTranslation";
 
-const ReviewsContainer = styled.section`
-  margin-top: 20px;
-  width: 700px;
-  margin-bottom: 30px;
-`;
-
-const ReviewItem = styled.div`
-  margin-top: 10px;
-  padding: 10px;
-  border: 1px solid #ccc; /* Добавим рамку для визуализации */
-  background-color: #333; /* Фоновый цвет для контраста */
-`;
-
-const Message = styled.p`
-  color: white; /* Цвет текста белый */
-  cursor: pointer;
-`;
-
-interface Review {
-  id: number;
-  user: { // Изменено для учета структуры объекта пользователя
-    id: number;
-    email: string;
+// Типы состояния
+interface ReviewItem {
+  user: {
     firstName: string;
     lastName: string;
   };
   review: string;
 }
 
-interface ReviewsProps {
-  productId: number; // Ожидаем, что productId будет передан как пропс
+interface RootState {
+  auth: {
+    user: { firstName: string; lastName: string } | null;
+  };
 }
 
-const Reviews: React.FC<ReviewsProps> = ({ productId }) => {
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [error, setError] = useState<string | null>(null);
+interface ReviewsProps {
+  reviewData: ReviewItem[];
+  productId: number;
+  updateReviews: () => void;
+}
 
+function Reviews({ reviewData, productId, updateReviews }: ReviewsProps) {
+  const user = useSelector((state: RootState) => state.auth.user);
+
+  const [existingFeedback, setExistingFeedBack] = useState<boolean>(false);
+  const [newReview, setNewReview] = useState<string>("");
+
+  // Проверка на то, был ли оставлен отзыв на товар с заданным Id
   useEffect(() => {
-    const fetchReviews = async () => {
-      if (!productId) {
-        setError('Отсутствует ID продукта.');
-        return;
-      }
+    isExistedFeedback();
+  }, [productId, existingFeedback]);
 
-      try {
-        const response = await fetch(`https://frost.runtime.kz/api/reviews?productId=${productId}`);
-        if (!response.ok) {
-          throw new Error('Ошибка при загрузке отзывов');
-        }
-        const data = await response.json();
-        console.log(data); // Проверка структуры данных
+  // Отзывы пользователей
+  const renderReviewData = () => {
+    return reviewData.map((reviewItem, index) => (
+      <div key={index} className="review-item dark:border-[#393939]">
+        <div className="review-item-name dark:text-white">
+          <b>{`${reviewItem.user.firstName} ${reviewItem.user.lastName}`}</b>
+        </div>
 
-        if (Array.isArray(data)) {
-          setReviews(data);
-        } else {
-          setError('Неверная структура данных. Ожидался массив отзывов.');
-        }
-      } catch (error: any) {
-        setError('Ошибка при получении отзывов: ' + error.message);
-      }
-    };
+        <div className="review-item-feedback dark:text-white">{reviewItem.review}</div>
+      </div>
+    ));
+  };
 
-    fetchReviews();
-  }, [productId]); // productId в зависимостях
+  // Запрос на установку состояния, отправлял ли пользователь отзыв на товар с конкретным id
+  // Если отправлял – true, если не отправлял – false
+  const isExistedFeedback = () => {
+    axios
+      .get(`https://frost.runtime.kz/api/reviews/exists?productId=${productId}`)
+      .then((response) => {
+        setExistingFeedBack(response.data);
+      })
+      .catch((error) => console.error(error));
+  };
+
+  const handleNewReview = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setNewReview(event.target.value);
+  };
+
+  // Запрос на добавление нового отзыва
+  const addNewFeedback = () => {
+    axios
+      .post("https://frost.runtime.kz/api/reviews", {
+        product_id: productId,
+        review: newReview,
+      })
+      .then(() => {
+        setExistingFeedBack(true);
+        updateReviews();
+      })
+      .catch((error) => console.error(error));
+  };
+
+  // useTranslation.jsx
+  const { t } = useTranslation();
 
   return (
-    <ReviewsContainer>
-      <h2>Отзывы</h2>
-      <Message>
-        Чтобы оставить отзыв, <a href="/login" style={{ color: 'white' }}>войдите на сайт</a>.
-      </Message>
-      {error && <p style={{ color: 'red' }}>{error}</p>} {/* Отображаем ошибку красным цветом */}
-      {reviews.length === 0 && !error && <p>Отзывов пока нет.</p>} {/* Сообщение, если нет отзывов */}
-      {reviews.map((review) => (
-        <ReviewItem key={review.id}>
-          <p>
-            <strong>{review.user.firstName || 'Неизвестный автор'}</strong> {/* Выводим имя пользователя */}
-          </p>
-          <p>{review.review || 'Нет содержания'}</p> {/* Если содержимого нет, показываем 'Нет содержания' */}
-        </ReviewItem>
-      ))}
-    </ReviewsContainer>
+    <>
+      {existingFeedback === false ? (
+        <div className="reviews-wrap dark:bg-[#252525]">
+          {user ? (
+            <>
+              <div className="reviews-top dark:border-[#393939]">
+                <div className="reviews-divider dark:bg-[#393939]">{t("reviewAddFeedback")}</div>
+
+                <textarea
+                  className="reviews-input dark:border-[#393939] dark:bg-[#393939] dark:text-white"
+                  rows={2}
+                  cols={50}
+                  placeholder={t("reviewAddComment")}
+                  onChange={handleNewReview}
+                  maxLength={250}
+                />
+
+                <ButtonStandard
+                  name={t("reviewAddReviewButton")}
+                  className="reviewsComponent"
+                  clickHandler={addNewFeedback}
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              {`Чтобы оставить отзыв, `}
+              <span
+                className="reviews-sign-in"
+                // onClick
+              >
+                {`войдите на сайт.`}
+              </span>
+            </>
+          )}
+
+          <div className="reviews-bottom dark:border-[#393939]">
+            <div className="reviews-divider dark:bg-[#393939]">{t("reviewRecentFeedbacks")}</div>
+            {renderReviewData()}
+          </div>
+        </div>
+      ) : (
+        <>
+          <div className="existing-review">
+            <p>{t("reviewExistingFeedback")}</p>
+          </div>
+
+          <div className="reviews-bottom dark:border-[#393939]">
+            <div className="reviews-divider dark:bg-[#393939]">{t("reviewRecentFeedbacks")}</div>
+            {renderReviewData()}
+          </div>
+        </>
+      )}
+    </>
   );
-};
+}
 
 export default Reviews;
-

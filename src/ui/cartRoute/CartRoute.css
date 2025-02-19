@@ -1,0 +1,28 @@
+.route-container {
+  display: flex;
+  justify-content: center;
+  border: 1px solid #cccccc;
+  overflow: hidden;
+  border-radius: 5px;
+}
+
+.route-cart,
+.route-contacts,
+.route-delivery,
+.route-final {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1c1c1c;
+  text-decoration: none;
+  width: 160px;
+  height: 30px;
+  font-size: 14px;
+  background-color: #ffffff;
+}
+
+.activeRoute {
+  background-color: #7fb364;
+  color: #ffffff;
+  cursor: pointer;
+}

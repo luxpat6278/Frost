@@ -1,95 +1,125 @@
-import React, { useState, useEffect } from "react";
-import Header from "../components/Header/Header";
-import Footer from "../components/Footer/Footer";
-import styled from "styled-components";
-import ProductItem from "../components/ProductItem/ProductItem";
-import PaymentOptions from "../components/PaymentOptions/PaymentOptions";
+import React, { useState } from "react"
+import { useSelector } from "react-redux"
+import Header from "../components/header/Header"
+import Footer from "../components/footer/Footer"
+import CartRoute from "../ui/cartRoute/CartRoute"
+import CartComponent from "../components/cartRouteComponents/cartComponent/CartComponent"
+import ContactDetails from "../components/cartRouteComponents/contactDetails/ContactDetails"
+import DeliveryDetails from "../components/cartRouteComponents/deliveryDetails/DeliveryDetails"
+import OrderComplete from "../components/cartRouteComponents/orderComplete/OrderComplete"
+import UserProfile from "./UserProfile"
+import { useTranslation } from "../hooks/useTranslation"
 
-const Container = styled.div`
-  padding: 20px;
-`;
+// Типы для данных заказа
+interface OrdersData {
+  phone: string
+  area: string
+  city: string
+  street: string
+  house: string
+  apartment: string
+}
 
-const Section = styled.div`
-  margin-bottom: 20px;
-`;
+// Типы для сообщений об ошибках
+interface ErrorMessages {
+  apartment: string
+  area: string
+  city: string
+  house: string
+  phone: string
+  street: string
+}
 
-const Title = styled.h1`
-  font-size: 24px;
-  margin-bottom: 10px;
-`;
+function CartPage() {
+  const user = useSelector((state: any) => state.auth.user)
+  const totalCount = useSelector((state: any) => state.counter.counter)
 
-const CheckoutSteps = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
-`;
+  const [currentComponent, setCurrentComponent] = useState<string>("cart")
+  const [orderNumber, setOrderNumber] = useState<string | null>(null)
 
-const Step = styled.div<{ active: boolean }>`
-  padding: 10px;
-  background-color: ${({ active }) => (active ? "#ddd" : "#f4f4f4")};
-  border-radius: 5px;
-  flex: 1;
-  text-align: center;
-`;
+  const [ordersData, setOrdersData] = useState<OrdersData>({
+    phone: "",
+    area: "",
+    city: "",
+    street: "",
+    house: "",
+    apartment: "",
+  })
 
-const TotalPrice = styled.div`
-  font-size: 18px;
-  margin-top: 20px;
-`;
+  const [errorMessages, setErrorMessages] = useState<ErrorMessages>({
+    apartment: "",
+    area: "",
+    city: "",
+    house: "",
+    phone: "",
+    street: "",
+  })
 
-const CartPage: React.FC = () => {
-  const [products, setProducts] = useState<any[]>([]);
-  const [total, setTotal] = useState<number>(0);
+  const renderContent = function () {
+    if (isProfilePage) {
+      return <UserProfile />
+    }
 
-  useEffect(() => {
-    fetch("https://frost.runtime.kz/api/products")
-      .then(response => response.json())
-      .then(data => setProducts(data))
-      .catch(error => console.error("Error fetching products:", error));
-  }, []);
+    if (currentComponent === "cart") {
+      return <CartComponent setCurrentComponent={setCurrentComponent} />
+    } else if (currentComponent === "contacts") {
+      return (
+        <ContactDetails
+          setCurrentComponent={setCurrentComponent}
+          ordersData={ordersData}
+          setOrdersData={setOrdersData}
+          errorMessages={errorMessages}
+        />
+      )
+    } else if (currentComponent === "delivery") {
+      return (
+        <DeliveryDetails
+          setCurrentComponent={setCurrentComponent}
+          ordersData={ordersData}
+          setOrdersData={setOrdersData}
+          setOrderNumber={setOrderNumber}
+          errorMessages={errorMessages}
+          setErrorMessages={setErrorMessages}
+        />
+      )
+    } else if (currentComponent === "final") {
+      return (
+        <OrderComplete
+          setCurrentComponent={setCurrentComponent}
+          ordersData={ordersData}
+          setOrdersData={setOrdersData}
+          orderNumber={orderNumber}
+          setIsProfilePage={setIsProfilePage}
+        />
+      )
+    }
+  }
 
-  useEffect(() => {
-    const newTotal = products.reduce((sum, product) => sum + (product.price * product.quantity), 0);
-    setTotal(newTotal);
-  }, [products]);
+  const [isProfilePage, setIsProfilePage] = useState<boolean>(false)
 
-  const handleQuantityChange = (id: number, quantity: number) => {
-    setProducts(products.map(product =>
-      product.id === id ? { ...product, quantity } : product
-    ));
-  };
-
-  const handleRemove = (id: number) => {
-    setProducts(products.filter(product => product.id !== id));
-  };
+  const { t } = useTranslation()
 
   return (
-    <>
-      <Header />
-      <Container>
-        <Title>Оформление заказа</Title>
-        <CheckoutSteps>
-          <Step active>Корзина</Step>
-          <Step>Контактные данные</Step>
-          <Step>Доставка</Step>
-          <Step>Завершение</Step>
-        </CheckoutSteps>
-        <Section>
-          {products.map(product => (
-            <ProductItem
-              key={product.id}
-              product={product}
-              onQuantityChange={handleQuantityChange}
-              onRemove={handleRemove}
-            />
-          ))}
-        </Section>
-        <PaymentOptions />
-        <TotalPrice>Итоговая сумма: {total} руб.</TotalPrice>
-      </Container>
-      <Footer />
-    </>
-  );
-};
+    <div className="main-page-container dark:bg-[#393939]">
+      {isProfilePage && user ? (
+        <UserProfile />
+      ) : (
+        <>
+          <Header totalCount={totalCount} />
 
-export default CartPage;
+          <div className="cart-route dark:bg-[#393939]">
+            <p className="cart-route-text">{t("cartPageHeader")}</p>
+
+            <CartRoute currentComponent={currentComponent} setCurrentComponent={setCurrentComponent} />
+          </div>
+
+          {renderContent()}
+
+          <Footer />
+        </>
+      )}
+    </div>
+  )
+}
+
+export default CartPage

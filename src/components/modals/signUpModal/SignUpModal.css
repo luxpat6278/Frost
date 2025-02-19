@@ -1,0 +1,37 @@
+.modal-title {
+  cursor: pointer;
+}
+
+.modal-title:hover {
+  color: #7fb364;
+}
+
+.modal-title::before {
+  content: " ";
+  position: absolute;
+  left: 5px;
+  top: 100%;
+  width: 0;
+  height: 2px;
+  background-color: #7fb364;
+  transition-duration: 0.3s;
+  transition-property: width;
+}
+
+.modal-title:hover::before {
+  width: calc(100% - 10px);
+}
+
+.signUpModal {
+  width: 400px;
+  height: 40px;
+}
+
+.firstNameLastName {
+  width: 195px;
+}
+
+.signin-signup-style {
+  color: #7fb364;
+  cursor: pointer;
+}

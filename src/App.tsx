@@ -1,32 +1,31 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import { Provider } from 'react-redux'; // Redux Provider
-import store from './slice/store'; // Импортируйте ваш Redux store
-import { CartProvider } from './context/localizationContext/LocalizationContext'; // Импортируйте CartProvider
-import MainPage from './pages/MainPage';
-import ProductPage from './pages/ProductPage';
-import CartPage from './pages/CartPage';
-import Header from './components/Header/Header';
+import { Outlet, useParams } from "react-router-dom"
+import { useContext, useEffect } from "react"
+import { LocalizationContext } from "./contexts/localizationContext/LocalizationContext"
+import { APP_LOCALES } from "./locales/locales"
 
-const App: React.FC = () => {
-  const handleSearch = (query: string) => {
-    console.log('Поиск:', query);
-  };
+interface Params {
+  locale: string | undefined
+}
+
+function App() {
+  const { currentLanguage, setCurrentLanguage } = useContext(LocalizationContext)
+  const { locale } = useParams<Params>() // Используем типизацию для useParams
+
+  useEffect(() => {
+    if (locale) {
+      const validLocale = APP_LOCALES.find((lang) => lang.serviceName === locale)
+      if (validLocale && validLocale.serviceName !== currentLanguage) {
+        setCurrentLanguage(locale)
+      }
+    }
+  }, [locale, currentLanguage, setCurrentLanguage])
 
   return (
-    <Provider store={store}> 
-      <CartProvider> 
-        <Header onSearch={handleSearch} />
-        <div className="app-container">
-          <Routes>
-            <Route path="/" element={<MainPage />} />
-            <Route path="/product/:id" element={<ProductPage />} />
-            <Route path="/cart" element={<CartPage />} />
-          </Routes>
-        </div>
-      </CartProvider>
-    </Provider>
-  );
-};
+    <>
+      {/* Рендер дочерних компонентов */}
+      <Outlet />
+    </>
+  )
+}
 
-export default App;
+export default App
