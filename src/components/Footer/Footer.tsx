@@ -1,7 +1,7 @@
 import "./Footer.css";
-import instagramLogo from "../../images/instagram";
-import gmailLogo from "../../images/gmail";
-import phoneCallLogo from "../../images/phone-call";
+import instagramLogo from '../../images/instagram.png';
+import gmailLogo from '../../images/gmail.png';
+import phoneCallLogo from '../../images/phone-call.png';
 import { useTranslation } from "../../hooks/useTranslation";
 
 // Типы для использования в компоненте

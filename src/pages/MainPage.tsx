@@ -1,13 +1,13 @@
-import React, { useState } from "react"
-import { useDispatch } from "react-redux"
-import Header from "../components/header/Header"
-import Footer from "../components/footer/Footer"
-import FilterSection from "../components/filterSection/FilterSection"
-import ProductsGrid from "../components/productsGrid/ProductsGrid"
-import PageNavigation from "../components/pageNavigation/PageNavigation"
-import { setCurrentPage } from "../slices/filterSlice"
-import UserProfile from "./UserProfile"
-import Banner from "../ui/banner/Banner"
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import Header from '../components/header/Header';
+import Footer from '../components/footer/Footer';
+import FilterSection from "../components/filterSection/FilterSection";
+import ProductsGrid from "../components/productsGrid/ProductsGrid";
+import PageNavigation from "../components/pageNavigation/PageNavigation";
+import { setCurrentPage } from "../slices/filterSlice";
+import UserProfile from "./UserProfile";
+import Banner from "../ui/banner/Banner";
 
 // Типизация пропсов для PageNavigation
 interface PageNavigationProps {

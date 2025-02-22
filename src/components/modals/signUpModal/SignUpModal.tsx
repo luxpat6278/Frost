@@ -9,6 +9,8 @@ import { signIn } from "../../../slices/authSlice";
 import { setLoading } from "../../../slices/loadingSlice";
 import { useTranslation } from "../../../hooks/useTranslation";
 
+
+
 // Типы пропсов
 interface SignUpModalProps {
   isOpen: boolean;

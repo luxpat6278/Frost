@@ -4,8 +4,8 @@ import { useEffect } from "react";
 import useModal from "../../hooks/useModal";
 import LogInModal from "../modals/logInModal/LogInModal";
 import SignUpModal from "../modals/signUpModal/SignUpModal";
-import cart from "../../images/cart";
-import logout from "../../images/logout";
+import cart from '../../images/cart.png'
+import logout from '../../images/logout.png';
 import { checkTokenAndGetUser, signOut } from "../../slices/authSlice";
 import "./Header.css";
 import { toggleTheme } from "../../slices/themeSlice";

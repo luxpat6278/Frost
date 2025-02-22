@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import axios from "axios"
 import { AppDispatch, RootState } from "../store" // Убедитесь, что у вас есть типы для dispatch и состояния
 
